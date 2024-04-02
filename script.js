@@ -7,54 +7,97 @@ let answer;
 
 allButtons.addEventListener("click", (e) => {
     if (e.target.className == "digit") {
-        if (operator == "") {
-            firstNumber += e.target.textContent;
-            display.textContent = firstNumber;
-        } else {
-            secondNumber += e.target.textContent;
-            display.textContent = secondNumber;
-        }
+        digitButton(e.target);
     }
 
     if (e.target.className == "operational") {
-        if (e.target.id == "equals") {
-            if (firstNumber && secondNumber) {
-                answer = operate(firstNumber, secondNumber, operator);
-                display.textContent = answer;
-                firstNumber = answer;
-                secondNumber = "";
-                operator = "";
-            } 
-        } else if (operator != "") {
-            answer = operate(firstNumber,secondNumber,operator);
-            display.textContent = answer;
-            firstNumber = answer;
-            secondNumber = "";
-            operator = e.target.textContent;
-        } else {
-            operator = e.target.textContent;
-        }
+        operationalButton(e.target);
     }
 
     if (e.target.className == "master") {
-        if (e.target.id == "clear") {
-            firstNumber = "";
-            secondNumber = "";
-            answer = "";
-            operator = "";
-            display.textContent = "0";
-        }
-        if (e.target.id == "negate") {
-            if (operator == "") {
-                firstNumber = String(Number(firstNumber) * -1);
-                display.textContent = firstNumber;
-            } else {
-                secondNumber = String(Number(secondNumber) * -1);
-                display.textContent = secondNumber;
-            }
-        }
+        masterButtons(e.target);
     }
 });
+
+function digitButton(target) {
+    if (operator == "") {
+        firstNumber += target.textContent;
+        display.textContent = firstNumber;
+    } else {
+        secondNumber += target.textContent;
+        display.textContent = secondNumber;
+    }
+}
+
+function operationalButton(target) {
+    if (target.id == "equals") {
+        if (firstNumber && secondNumber) {
+            answer = operate(firstNumber, secondNumber, operator);
+            display.textContent = answer;
+            firstNumber = "";
+            secondNumber = "";
+            operator = "";
+        } 
+    } else if (operator != "") {
+        answer = operate(firstNumber,secondNumber,operator);
+        display.textContent = answer;
+        firstNumber = answer;
+        secondNumber = "";
+        operator = target.textContent;
+    } else {
+        operator = target.textContent;
+    }
+}
+
+function masterButtons(target) {
+    if (target.id == "clear") {
+        clear();
+     }
+
+    if (target.id == "negate") {
+        negateNumber();
+    }
+
+    if (target.id == "delete") {
+        deleteEndOfNumber();
+    }
+}
+
+function clear() {
+    firstNumber = "";
+    secondNumber = "";
+    answer = "";
+    operator = "";
+    display.textContent = "0";
+}
+
+function negateNumber() {
+    if (operator == "") {
+        firstNumber = String(Number(firstNumber) * -1);
+        display.textContent = firstNumber;
+    } else {
+        secondNumber = String(Number(secondNumber) * -1);
+        display.textContent = secondNumber;
+    }
+}
+
+function deleteEndOfNumber() {
+    if (operator == "") {
+        firstNumber = firstNumber.slice(0, firstNumber.length - 1);
+        if (firstNumber != "") {
+            display.textContent = firstNumber;
+        } else {
+            display.textContent = "0";
+        }
+    } else {
+        secondNumber = secondNumber.slice(0, secondNumber.length - 1);
+        if (secondNumber != "") {
+            display.textContent = secondNumber;
+            } else {
+            display.textContent = "0";
+        }
+    }
+}
 
 function add(a, b) {
     return Number(a) + Number(b);
