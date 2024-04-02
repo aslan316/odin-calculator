@@ -3,6 +3,7 @@ const display = document.querySelector("#display");
 let firstNumber = "";
 let secondNumber = "";
 let operator = "";
+let decimalUsed = false;
 let answer;
 
 allButtons.addEventListener("click", (e) => {
@@ -20,13 +21,20 @@ allButtons.addEventListener("click", (e) => {
 });
 
 function digitButton(target) {
-    if (operator == "") {
-        firstNumber += target.textContent;
-        display.textContent = firstNumber;
-    } else {
-        secondNumber += target.textContent;
-        display.textContent = secondNumber;
+    if (!(target.id == "decimal" && decimalUsed)){
+        if (operator == "") {
+            firstNumber += target.textContent;
+          display.textContent = firstNumber;
+        } else {
+            secondNumber += target.textContent;
+            display.textContent = secondNumber;
+        }
+
+        if (target.id == "decimal") {
+            decimalUsed = true;
+        }
     }
+    
 }
 
 function operationalButton(target) {
@@ -36,6 +44,7 @@ function operationalButton(target) {
             display.textContent = answer;
             firstNumber = "";
             secondNumber = "";
+            decimalUsed = false;
             operator = "";
         } 
     } else if (operator != "") {
@@ -43,8 +52,10 @@ function operationalButton(target) {
         display.textContent = answer;
         firstNumber = answer;
         secondNumber = "";
+        decimalUsed = false;
         operator = target.textContent;
     } else {
+        decimalUsed = false;
         operator = target.textContent;
     }
 }
@@ -67,6 +78,7 @@ function clear() {
     firstNumber = "";
     secondNumber = "";
     answer = "";
+    decimalUsed = false;
     operator = "";
     display.textContent = "0";
 }
