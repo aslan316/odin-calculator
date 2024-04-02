@@ -21,12 +21,13 @@ allButtons.addEventListener("click", (e) => {
 });
 
 function digitButton(target) {
+    //a decimal can only be used once per number, or math gets messy
     if (!(target.id == "decimal" && decimalUsed)){
         if (operator == "") {
-            firstNumber += target.textContent;
+            firstNumber = (firstNumber.length < 12) ? firstNumber + target.textContent : firstNumber;
           display.textContent = firstNumber;
         } else {
-            secondNumber += target.textContent;
+            secondNumber = (secondNumber.length < 12) ? secondNumber + target.textContent : secondNumber;
             display.textContent = secondNumber;
         }
 
@@ -85,11 +86,15 @@ function clear() {
 
 function negateNumber() {
     if (operator == "") {
-        firstNumber = String(Number(firstNumber) * -1);
-        display.textContent = firstNumber;
+        if (firstNumber != "") {
+            firstNumber = String(Number(firstNumber) * -1);
+            display.textContent = firstNumber;
+        }
     } else {
-        secondNumber = String(Number(secondNumber) * -1);
-        display.textContent = secondNumber;
+        if (firstNumber != "") {
+            secondNumber = String(Number(secondNumber) * -1);
+            display.textContent = secondNumber;
+        }
     }
 }
 
@@ -112,33 +117,54 @@ function deleteEndOfNumber() {
 }
 
 function add(a, b) {
-    return Number(a) + Number(b);
+    return String(Number(a) + Number(b));
 }
 
 function subtract(a, b) {
-    return Number(a) - Number(b);
+    return String(Number(a) - Number(b));
 }
 
 function multiply(a, b) {
-    return Number(a) * Number(b);
+    return String(Number(a) * Number(b));
 }
 
 function divide(a, b) {
     if (b == 0) {
         return "big and spooky";
     }
-    return Number(a) / Number(b);
+    return String(Number(a) / Number(b));
 }
 
 function operate(a, b, operator) {
     switch(operator) {
         case "+":
-            return add(a, b);
+            return fitScreen(add(a, b));
         case "-":
-            return subtract(a, b);
+            return fitScreen(subtract(a, b));
         case "*":
-            return multiply(a, b);
+            return fitScreen(multiply(a, b));
         case "/":
-            return divide(a, b);
+            return fitScreen(divide(a, b));
     }
+}
+
+//ensures that any long decimal is formatted so that
+//there are 12 digits in the number, the size of the display screen
+//if too big, 
+function fitScreen(number) {
+    if (number.length <= 12) {
+        return number;
+    }
+
+    const lengthToDecimal = (number.split("").indexOf(".") != -1) 
+                            ? number.slice(0, number.split("").indexOf(".") + 1).length
+                            : number.length;
+
+    if (lengthToDecimal > 12) {
+        return String(Number(number).toExponential(6));
+    } else {
+        const roundToLength = 10 ** (12 - lengthToDecimal);
+        return Math.round(number * roundToLength) / roundToLength;
+    }
+    
 }
