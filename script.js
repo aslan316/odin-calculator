@@ -1,10 +1,44 @@
 const allButtons = document.querySelector(".buttons");
+const allMasterButtons = document.querySelectorAll(".master");
+const allDigitButtons = document.querySelectorAll(".digit");
+const allOperationalButtons = document.querySelectorAll(".operational");
 const display = document.querySelector("#display");
 let firstNumber = "";
 let secondNumber = "";
 let operator = "";
 let decimalUsed = false;
 let answer;
+
+allButtons.addEventListener("mousedown", (e) => {
+    if (e.target.className == "digit") {
+        e.target.style.backgroundColor = "#c94271";
+    }
+
+    if (e.target.className == "master") {
+        e.target.style.backgroundColor = "#d43131";
+    }
+
+    if (e.target.className == "operational") {
+        e.target.style.backgroundColor = "#f70764";
+    }
+});
+
+allButtons.addEventListener("mouseup", () => {
+    allMasterButtons.forEach(setMasterButtonColor);
+    allDigitButtons.forEach(setDigitButtonColor);
+});
+
+function setMasterButtonColor(button) {
+    button.style.backgroundColor = "#f43838";
+}
+
+function setDigitButtonColor(button) {
+    button.style.backgroundColor = "#f25189";
+}
+
+function setOperationalButtonColor(button) {
+    button.style.backgroundColor = "#d10755";
+}
 
 allButtons.addEventListener("click", (e) => {
     if (e.target.className == "digit") {
@@ -47,6 +81,8 @@ function operationalButton(target) {
             secondNumber = "";
             decimalUsed = false;
             operator = "";
+            
+            allOperationalButtons.forEach(setOperationalButtonColor);
         } 
     } else if (operator != "") {
         answer = operate(firstNumber,secondNumber,operator);
@@ -55,6 +91,10 @@ function operationalButton(target) {
         secondNumber = "";
         decimalUsed = false;
         operator = target.textContent;
+
+        //the next operational button needs to still be highlighted after pressed
+        allOperationalButtons.forEach(setOperationalButtonColor);
+        target.style.backgroundColor = "#f70764";
     } else {
         decimalUsed = false;
         operator = target.textContent;
